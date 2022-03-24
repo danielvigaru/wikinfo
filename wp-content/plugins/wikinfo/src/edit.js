@@ -1,36 +1,111 @@
-/**
- * WordPress components that create the necessary UI elements for the block
- *
- * @see https://developer.wordpress.org/block-editor/packages/packages-components/
- */
-import { TextControl, Icon } from "@wordpress/components";
-
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
- */
+import { TextControl, Icon, Text } from "@wordpress/components";
 import { useBlockProps } from "@wordpress/block-editor";
+import { useEffect, useState } from "@wordpress/element";
 
-/**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/developers/block-api/block-edit-save/#edit
- *
- * @param {Object}   props               Properties passed to the function.
- * @param {Object}   props.attributes    Available block attributes.
- * @param {Function} props.setAttributes Function that updates individual attributes.
- *
- * @return {WPElement} Element to render.
- */
+import wiki from "wikipedia";
+
 export default function Edit({ attributes, setAttributes }) {
     const blockProps = useBlockProps();
+
+    const [wikiData, setWikiData] = useState({
+        title: "",
+        summary: "",
+    });
+    const [subject, setSubject] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchResultsOptions, setSearchResultsOptions] = useState({
+        open: false,
+        openable: true,
+    });
+
+    const getWikiData = async subject => {
+        if (!subject) return;
+
+        try {
+            const wikiData = await wiki.summary(subject);
+            console.log("wikiData", wikiData);
+            setWikiData({
+                title: wikiData.title,
+                summary: wikiData.extract,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getSearchResults = async subject => {
+        if (!subject) {
+            setSearchResults([]);
+            return;
+        }
+
+        const searchResults = await wiki.search(subject, {
+            suggestion: true,
+            limit: 10,
+        });
+        setSearchResults(searchResults.results);
+    };
+
+    useEffect(() => {
+        if (attributes.title) {
+            setSubject(attributes.title);
+        }
+    }, [attributes.title]);
+
+    useEffect(() => {
+        if (searchResultsOptions.openable) {
+            setSearchResultsOptions({ ...searchResultsOptions, open: true });
+            getSearchResults(subject);
+        }
+
+        const timeoutId = setTimeout(() => {
+            getWikiData(subject);
+        }, 1000);
+
+        return () => clearTimeout(timeoutId);
+    }, [subject]);
+
     return (
-        <div>
-            {/* <Icon icon={<img src="../assets/wikipedia.png" />} /> */}
-            <TextControl {...blockProps} value={attributes.url} onChange={val => setAttributes({ url: val })} />
+        <div className="wikinfo-container" title={wikiData.title} summary={wikiData.summary}>
+            <TextControl
+                {...blockProps}
+                value={subject}
+                onChange={val => {
+                    setSubject(val);
+                    setSearchResultsOptions({
+                        ...searchResultsOptions,
+                        openable: true,
+                    });
+                }}
+            />
+            {!searchResultsOptions.open && <span>{wikiData.summary}</span>}
+            {searchResultsOptions.open && (
+                <ul>
+                    {searchResults.map((result, index) => (
+                        <li>
+                            <button
+                                className="search-result"
+                                key={index}
+                                onClick={() => {
+                                    setSubject(result.title);
+
+                                    setAttributes({
+                                        title: result.title,
+                                        summary: result.extract,
+                                    });
+
+                                    setSearchResultsOptions({
+                                        open: false,
+                                        openable: false,
+                                    });
+                                }}
+                            >
+                                {result.title}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }

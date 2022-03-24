@@ -16,9 +16,6 @@ import { registerBlockType } from "@wordpress/blocks";
 import "./style.scss";
 import "./editor.scss";
 
-/**
- * Internal dependencies
- */
 import Edit from "./edit";
 import save from "./save";
 
@@ -28,20 +25,12 @@ import save from "./save";
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
 registerBlockType("create-block/wikinfo", {
-    /**
-     * Used to construct a preview for the block to be shown in the block inserter.
-     */
     example: {
         attributes: {
-            url: "https://ro.wikipedia.org/wiki/Balen%C4%83_albastr%C4%83",
+            title: "Batman",
+            summary: "Un vultur sta pe pisc, cu un pix in plisc",
         },
     },
-    /**
-     * @see ./edit.js
-     */
     edit: Edit,
-    /**
-     * @see ./save.js
-     */
     save,
 });

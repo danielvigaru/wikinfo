@@ -8,11 +8,15 @@
     "icon": "admin-site-alt3",
     "description": "Wikipedia la degetul mic. Adauga o caseta cu detalii despre subiectul introdus.",
     "attributes": {
-        "url": {
+        "title": {
             "type": "string",
             "source": "attribute",
-            "selector": "div",
-            "attribute": "url"
+            "attribute": "title"
+        },
+        "summary": {
+            "type": "string",
+            "source": "attribute",
+            "attribute": "summary"
         }
     },
     "supports": {

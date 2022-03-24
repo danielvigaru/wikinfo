@@ -1,5 +1,4 @@
 import { useBlockProps } from "@wordpress/block-editor";
-import { useEffect } from "@wordpress/element";
 
 /**
  * The save function defines the way in which the different attributes should
@@ -14,19 +13,13 @@ import { useEffect } from "@wordpress/element";
  */
 export default function save({ attributes }) {
     const blockProps = useBlockProps.save();
-
-    const getWikiData = url => {
-        // const _url = url.trim();
-        fetch(url).then(response => console.log(response));
-    };
-
-    useEffect(() => {
-        getWikiData();
-    }, [attributes.url]);
+    const title = attributes.title;
+    const summary = attributes.summary;
 
     return (
-        <div {...blockProps} id="wikinfo" url={attributes.url}>
-            Wiki link: {attributes.url}
+        <div {...blockProps} title={title || " "} summary={summary || " "}>
+            <div>Titlu: {title}</div>
+            <div>Rezumat: {summary}</div>
         </div>
     );
 }
