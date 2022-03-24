@@ -1,0 +1,25 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "create-block/wikinfo",
+    "version": "0.1.0",
+    "title": "Wikinfo",
+    "category": "embed",
+    "icon": "admin-site-alt3",
+    "description": "Wikipedia la degetul mic. Adauga o caseta cu detalii despre subiectul introdus.",
+    "attributes": {
+        "url": {
+            "type": "string",
+            "source": "attribute",
+            "selector": "div",
+            "attribute": "url"
+        }
+    },
+    "supports": {
+        "html": false
+    },
+    "textdomain": "wikinfo",
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./index.css",
+    "style": "file:./style-index.css"
+}
