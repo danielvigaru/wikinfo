@@ -1,103 +1,130 @@
-import { TextControl, Icon, Text } from "@wordpress/components";
+import { TextControl } from "@wordpress/components";
 import { useBlockProps } from "@wordpress/block-editor";
 import { useEffect, useState } from "@wordpress/element";
 
 import wiki from "wikipedia";
 
+/**
+ * attributes = {
+ *   title: "",
+ *   summary: "",
+ * }
+ */
+
 export default function Edit({ attributes, setAttributes }) {
     const blockProps = useBlockProps();
 
-    const [wikiData, setWikiData] = useState({
-        title: "",
-        summary: "",
-    });
     const [subject, setSubject] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
-    const [searchResultsOptions, setSearchResultsOptions] = useState({
+    const [autocompletedSubject, setAutocompletedSubject] = useState("");
+    const [searchResults, setSearchResults] = useState({
         open: false,
         openable: true,
+        results: [],
+        suggestion: "",
     });
 
-    const getWikiData = async subject => {
+    const getDataFromWikipedia = async subject => {
         if (!subject) return;
 
         try {
             const wikiData = await wiki.summary(subject);
-            console.log("wikiData", wikiData);
-            setWikiData({
+            console.log("wiki data", wikiData);
+
+            return {
                 title: wikiData.title,
                 summary: wikiData.extract,
-            });
+            };
         } catch (error) {
             console.log(error);
         }
     };
 
-    const getSearchResults = async subject => {
+    const getWikiSearchResults = async subject => {
         if (!subject) {
             setSearchResults([]);
             return;
         }
 
-        const searchResults = await wiki.search(subject, {
+        const _searchResults = await wiki.search(subject, {
             suggestion: true,
             limit: 10,
         });
-        setSearchResults(searchResults.results);
+
+        return _searchResults;
     };
 
     useEffect(() => {
-        if (attributes.title) {
-            setSubject(attributes.title);
-        }
-    }, [attributes.title]);
+        setSubject(attributes.title);
+    }, []);
 
     useEffect(() => {
-        if (searchResultsOptions.openable) {
-            setSearchResultsOptions({ ...searchResultsOptions, open: true });
-            getSearchResults(subject);
-        }
+        if (searchResults.openable) {
+            getWikiSearchResults(subject) //
+                .then(response => {
+                    if (!response) return;
 
+                    setSearchResults({
+                        ...searchResults,
+                        open: true,
+                        results: response.results,
+                        suggestion: response.suggestion,
+                    });
+                });
+        }
+    }, [subject]);
+
+    // Search only on result click
+    useEffect(() => {
         const timeoutId = setTimeout(() => {
-            getWikiData(subject);
+            getDataFromWikipedia(subject) //
+                .then(wikiData => {
+                    setAttributes(wikiData);
+                });
         }, 1000);
 
         return () => clearTimeout(timeoutId);
-    }, [subject]);
+    }, [autocompletedSubject]);
 
     return (
-        <div className="wikinfo-container" title={wikiData.title} summary={wikiData.summary}>
+        <div className="wikinfo-container">
             <TextControl
                 {...blockProps}
                 value={subject}
                 onChange={val => {
                     setSubject(val);
-                    setSearchResultsOptions({
-                        ...searchResultsOptions,
-                        openable: true,
-                    });
+                    setSearchResults({ ...searchResults, openable: true });
                 }}
             />
-            {!searchResultsOptions.open && <span>{wikiData.summary}</span>}
-            {searchResultsOptions.open && (
+
+            {!searchResults.open && <span>{attributes.summary}</span>}
+
+            {searchResults.open && searchResults.results && (
                 <ul>
-                    {searchResults.map((result, index) => (
+                    {/* search suggestion */}
+                    {searchResults.suggestion && (
+                        <li>
+                            <button
+                                className="search-result"
+                                onClick={() => {
+                                    setSubject(searchResults.suggestion);
+                                    setAutocompletedSubject(searchResults.suggestion);
+                                }}
+                            >
+                                {searchResults.suggestion}
+                            </button>
+                        </li>
+                    )}
+
+                    {/* search results */}
+                    {searchResults.results.map((result, index) => (
                         <li>
                             <button
                                 className="search-result"
                                 key={index}
                                 onClick={() => {
                                     setSubject(result.title);
-
-                                    setAttributes({
-                                        title: result.title,
-                                        summary: result.extract,
-                                    });
-
-                                    setSearchResultsOptions({
-                                        open: false,
-                                        openable: false,
-                                    });
+                                    setAutocompletedSubject(result.title);
+                                    setSearchResults({ ...searchResults, open: false, openable: false });
                                 }}
                             >
                                 {result.title}

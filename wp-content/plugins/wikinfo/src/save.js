@@ -17,9 +17,13 @@ export default function save({ attributes }) {
     const summary = attributes.summary;
 
     return (
-        <div {...blockProps} title={title || " "} summary={summary || " "}>
-            <div>Titlu: {title}</div>
-            <div>Rezumat: {summary}</div>
+        <div {...blockProps}>
+            <div>
+                Titlu: <span id="title">{title}</span>
+            </div>
+            <div>
+                Rezumat: <span id="summary">{summary}</span>
+            </div>
         </div>
     );
 }

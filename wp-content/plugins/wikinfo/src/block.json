@@ -10,13 +10,13 @@
     "attributes": {
         "title": {
             "type": "string",
-            "source": "attribute",
-            "attribute": "title"
+            "source": "text",
+            "selector": "#title"
         },
         "summary": {
             "type": "string",
-            "source": "attribute",
-            "attribute": "summary"
+            "source": "text",
+            "selector": "#summary"
         }
     },
     "supports": {
