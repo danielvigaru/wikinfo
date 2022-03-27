@@ -3,13 +3,7 @@ import { useBlockProps } from "@wordpress/block-editor";
 import { useEffect, useState } from "@wordpress/element";
 
 import wiki from "wikipedia";
-
-/**
- * attributes = {
- *   title: "",
- *   summary: "",
- * }
- */
+import Card from "./Card";
 
 export default function Edit({ attributes, setAttributes }) {
     const blockProps = useBlockProps();
@@ -33,6 +27,8 @@ export default function Edit({ attributes, setAttributes }) {
             return {
                 title: wikiData.title,
                 summary: wikiData.extract,
+                image: wikiData.thumbnail ? wikiData.thumbnail.source : "",
+                link: wikiData.content_urls.desktop.page,
             };
         } catch (error) {
             console.log(error);
@@ -96,7 +92,14 @@ export default function Edit({ attributes, setAttributes }) {
                 }}
             />
 
-            {!searchResults.open && <span>{attributes.summary}</span>}
+            {!searchResults.open && (
+                <Card
+                    image={attributes.image}
+                    link={attributes.link}
+                    summary={attributes.summary}
+                    title={attributes.title}
+                />
+            )}
 
             {searchResults.open && searchResults.results && (
                 <ul>

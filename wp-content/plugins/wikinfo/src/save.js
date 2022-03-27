@@ -1,4 +1,5 @@
 import { useBlockProps } from "@wordpress/block-editor";
+import Card from "./Card";
 
 /**
  * The save function defines the way in which the different attributes should
@@ -13,17 +14,14 @@ import { useBlockProps } from "@wordpress/block-editor";
  */
 export default function save({ attributes }) {
     const blockProps = useBlockProps.save();
-    const title = attributes.title;
-    const summary = attributes.summary;
 
     return (
-        <div {...blockProps}>
-            <div>
-                Titlu: <span id="title">{title}</span>
-            </div>
-            <div>
-                Rezumat: <span id="summary">{summary}</span>
-            </div>
-        </div>
+        <Card
+            blockProps={blockProps}
+            image={attributes.image}
+            link={attributes.link}
+            summary={attributes.summary}
+            title={attributes.title}
+        />
     );
 }

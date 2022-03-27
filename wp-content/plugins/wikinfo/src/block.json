@@ -17,6 +17,18 @@
             "type": "string",
             "source": "text",
             "selector": "#summary"
+        },
+        "image": {
+            "type": "string",
+            "source": "attribute",
+            "selector": "img",
+            "attribute": "src"
+        },
+        "link": {
+            "type": "string",
+            "source": "attribute",
+            "selector": "a",
+            "attribute": "href"
         }
     },
     "supports": {
