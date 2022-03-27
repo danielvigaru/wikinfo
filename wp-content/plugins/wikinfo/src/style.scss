@@ -60,3 +60,14 @@
         margin-top: 2rem;
     }
 }
+
+@media only screen and (max-width: 600px) {
+    .wikinfo {
+        #thumbnail {
+            float: none;
+            margin-block: 2em 3rem;
+            margin-inline: auto;
+            max-width: 100%;
+        }
+    }
+}
