@@ -102,7 +102,7 @@ export default function Edit({ attributes, setAttributes }) {
             )}
 
             {searchResults.open && searchResults.results && (
-                <ul>
+                <ul className="search-list">
                     {/* search suggestion */}
                     {searchResults.suggestion && (
                         <li>
