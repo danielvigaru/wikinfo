@@ -16,7 +16,7 @@
     color: #000 !important;
     font-size: 16px;
     max-width: 40em;
-    padding: 3em;
+    padding: clamp(1em, 5vw, 3em);
     position: relative;
     text-decoration: none !important;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
