@@ -57,7 +57,6 @@ wp-config.php
 
 # Plugins
 /wp-content/plugins/hello.php
-/wp-content/plugins/content-views-query-and-display-post-page/
 
 # Log files
 *.log
