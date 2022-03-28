@@ -59,9 +59,6 @@ wp-config.php
 /wp-content/plugins/hello.php
 /wp-content/plugins/content-views-query-and-display-post-page/
 
-# Uploads
-/wp-content/uploads/
-
 # Log files
 *.log
 
