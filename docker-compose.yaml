@@ -8,7 +8,7 @@ services:
       - db_data:/var/lib/mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
@@ -19,7 +19,7 @@ services:
   wordpress:
     depends_on:
       - db
-    image: wordpress:latest
+    image: wordpress:php8.1
     volumes: [ "./:/var/www/html" ]
     ports:
       - "80:80"
@@ -36,7 +36,7 @@ services:
   phpmyadmin:
     depends_on:
       - db
-    image: phpmyadmin:latest
+    image: phpmyadmin:5.1.1
     restart: unless-stopped
     ports:
       - "81:80"
