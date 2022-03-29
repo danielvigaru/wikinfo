@@ -4,7 +4,8 @@ services:
   # MySQL
   db:
     image: mysql:oracle
-    volumes: [ "./database:/var/lib/mysql" ]
+    volumes:
+      - db_data:/var/lib/mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -50,3 +51,5 @@ services:
 networks:
   wpsite:
 
+volumes:
+  db_data: {}
