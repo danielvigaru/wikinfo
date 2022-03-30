@@ -1,3 +1,7 @@
-`docker-compose up -d`
+Run `docker-compose up -d` in the root directory.
 
-that's all
+Database is populated on the first run.
+
+Site: localhost
+
+phpMyAdmin: localhost:81
